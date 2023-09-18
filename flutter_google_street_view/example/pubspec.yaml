@@ -6,7 +6,7 @@ description: Demonstrates how to use the flutter_google_street_view plugin.
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 
 environment:
-  sdk: '>=2.12.0 <3.0.0'
+  sdk: '>=3.1.2 <4.0.0'
 
 dependencies:
   flutter:
@@ -14,7 +14,7 @@ dependencies:
 
   flutter_google_street_view:
     path: ../
-  pointer_interceptor: ^0.9.0+1
+  pointer_interceptor: ^0.9.3+6
   kotlin_scope_function: ^1.0.2
 
 dev_dependencies:
@@ -25,7 +25,7 @@ dev_dependencies:
   integration_test:
     sdk: flutter
   test: any
-  pedantic: ^1.8.0
+  pedantic: ^1.11.1
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

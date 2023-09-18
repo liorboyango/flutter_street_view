@@ -1,3 +1,8 @@
+## 3.1.5
+
+* `Android`:
+    - Fix onStreetViewPanoramaChange - parameter location null
+
 ## 3.1.4
 
 * `Android`:
