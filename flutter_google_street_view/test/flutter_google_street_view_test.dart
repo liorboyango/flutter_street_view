@@ -16,8 +16,9 @@ void main() {
       FakePlatformViewsController();
 
   setUpAll(() {
-    SystemChannels.platform_views.setMockMethodCallHandler(
-        fakePlatformViewsController.fakePlatformViewsMethodHandler);
+    TestWidgetsFlutterBinding.instance.defaultBinaryMessenger
+        .setMockMethodCallHandler(channel,
+            fakePlatformViewsController.fakePlatformViewsMethodHandler);
   });
 
   setUp(() {
@@ -25,7 +26,8 @@ void main() {
   });
 
   tearDown(() {
-    channel.setMockMethodCallHandler(null);
+    TestWidgetsFlutterBinding.instance.defaultBinaryMessenger
+        .setMockMethodCallHandler(channel, null);
   });
 
   testWidgets("Init Street View", (WidgetTester tester) async {

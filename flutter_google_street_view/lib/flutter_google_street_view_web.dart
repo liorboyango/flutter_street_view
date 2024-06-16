@@ -2,6 +2,8 @@ import 'dart:async';
 import 'dart:html';
 import 'dart:math';
 
+import 'package:web/web.dart' show HTMLElement, HTMLDivElement;
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_google_street_view/src/web/convert.dart';

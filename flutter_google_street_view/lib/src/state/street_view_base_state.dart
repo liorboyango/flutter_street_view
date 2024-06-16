@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_google_street_view/flutter_google_street_view.dart';
-import 'package:meta/meta.dart';
 
 class StreetViewBaseState extends State<FlutterGoogleStreetView> {
   @override

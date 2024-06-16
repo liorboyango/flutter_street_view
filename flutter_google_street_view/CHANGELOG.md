@@ -1,3 +1,9 @@
+## 3.2.0
+
+* `Dart`:
+    - Flutter 3.22.2 & Dart 3.4.3 adjustments
+    - Dependencies update
+
 ## 3.1.5
 
 * `Android`:

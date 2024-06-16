@@ -9,7 +9,7 @@ buildscript {
     }
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:8.0.2'
+        classpath 'com.android.tools.build:gradle:8.4.2'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
     }
 }
@@ -25,7 +25,7 @@ apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 
 android {
-    compileSdkVersion 33
+    compileSdk 34
 
     namespace 'zyz.flutter.plugin.flutter_google_street_view'
 
@@ -56,5 +56,5 @@ dependencies {
     def lifecycle_version = "2.6.2"
     implementation "androidx.lifecycle:lifecycle-common-java8:$lifecycle_version"
     //compileOnly files('libs/flutter.jar')
-    implementation 'com.google.android.gms:play-services-maps:17.0.0'
+    implementation 'com.google.android.gms:play-services-maps:18.2.0'
 }

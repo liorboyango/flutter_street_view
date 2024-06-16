@@ -23,13 +23,13 @@ class FlutterGoogleStreetViewPlugin {
 
   static Map<int, bool> _lockMap = {};
   static Map<int, FlutterGoogleStreetViewPlugin> _plugins = {};
-  static Map<int, HtmlElement> _divs = {};
+  static Map<int, HTMLElement> _divs = {};
 
   String _getViewType(int viewId) => "my_street_view_$viewId";
 
   // The Flutter widget that contains the rendered StreetView.
   HtmlElementView? _widget;
-  late HtmlElement _div;
+  late HTMLElement _div;
   late int _viewId;
 
   /// The view id of street view.
@@ -58,7 +58,8 @@ class FlutterGoogleStreetViewPlugin {
     try {
       options = await toStreetViewPanoramaOptions(arg);
     } catch (exception) {
-      NoStreetViewException noStreetViewException = (exception as NoStreetViewException);
+      NoStreetViewException noStreetViewException =
+          (exception as NoStreetViewException);
       options = noStreetViewException.options..visible = false;
       errorMsg = noStreetViewException.errorMsg;
     }
@@ -74,7 +75,8 @@ class FlutterGoogleStreetViewPlugin {
         fakeOptions = await toStreetViewPanoramaOptions(arg)
           ..visible = false;
       } catch (exception) {
-        NoStreetViewException noStreetViewException = (exception as NoStreetViewException);
+        NoStreetViewException noStreetViewException =
+            (exception as NoStreetViewException);
         fakeOptions = noStreetViewException.options..visible = false;
         errorMsg = noStreetViewException.errorMsg;
       }
@@ -130,7 +132,7 @@ class FlutterGoogleStreetViewPlugin {
     debug("FlutterGoogleStreetViewPlugin:$arg");
     _viewId = _streetViewId += 1;
     debug("create new plugin, viewId:$viewId");
-    _div = DivElement()
+    _div = HTMLDivElement()
       ..id = _getViewType(_viewId)
       ..style.width = '100%'
       ..style.height = '100%';
@@ -138,7 +140,10 @@ class FlutterGoogleStreetViewPlugin {
     _plugins[_viewId] ??= this;
     ui.platformViewRegistry.registerViewFactory(
       _getViewType(_viewId),
-      (int viewId) => _div,
+      (int viewId) => HtmlElement.new()
+        ..id = _div.id
+        ..style.width = _div.style.width
+        ..style.height = _div.style.height,
     );
     _setup(arg);
     _methodChannel = MethodChannel(
