@@ -614,7 +614,7 @@ class FlutterGoogleStreetView(
         )
     }
 
-    override fun onStreetViewPanoramaChange(location: StreetViewPanoramaLocation?) {
+    override fun onStreetViewPanoramaChange(location: StreetViewPanoramaLocation) {
         if (viewReadyResult != null) {
             val hasInitLocation = initOptions?.let { it1 ->
                 it1.panoramaId != null || it1.position != null
@@ -624,7 +624,7 @@ class FlutterGoogleStreetView(
                 viewReadyResult = null
             }
         }
-        val arg = location?.let {
+        val arg = location.let {
             Convert.streetViewPanoramaLocationToJson(
                 it
             )
