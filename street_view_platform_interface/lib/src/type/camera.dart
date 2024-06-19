@@ -1,8 +1,4 @@
-import 'package:street_view_platform_interface/src/type/street_view_panorama_link.dart';
-import 'package:street_view_platform_interface/src/type/util/misc.dart';
 import 'package:street_view_platform_interface/street_view_platform_interface.dart';
-
-import 'latLng.dart';
 
 class StreetViewCameraPosition {
   StreetViewCameraPosition(
@@ -109,18 +105,20 @@ class StreetViewPanoramaLocation {
     List<StreetViewPanoramaLink>? linksTmp;
     LatLng? position;
     String? panoId;
-    if (map != null) {
-      if (map['links'] != null) {
-        linksTmp = [];
-        (map['links'] as List?)?.forEach((e) {
-          linksTmp!.add(StreetViewPanoramaLink(panoId: e[0], bearing: e[1]));
-        });
+    try {
+      if (map != null) {
+        if (map['links'] != null) {
+          linksTmp = [];
+          (map['links'] as List?)?.forEach((e) {
+            linksTmp!.add(StreetViewPanoramaLink(panoId: e[0], bearing: e[1]));
+          });
+        }
+        position = map['position'][0] != null && map['position'][1] != null
+            ? LatLng(map['position'][0] as double, map['position'][1] as double)
+            : null;
+        panoId = map['panoId'] as String?;
       }
-      position = map['position'][0] != null && map['position'][1] != null
-          ? LatLng(map['position'][0] as double, map['position'][1] as double)
-          : null;
-      panoId = map['panoId'] as String?;
-    }
+    } catch (e) {}
     return StreetViewPanoramaLocation(
         links: linksTmp, position: position, panoId: panoId);
   }

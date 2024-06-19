@@ -1,3 +1,9 @@
+## 1.1.0
+
+* Flutter 3.22.2 & Dart 3.4.3  adjustments
+* Dependencies update
+* Fix nullable location param in PanoramaChangeData
+
 ## 1.0.8
 
 * Add get fun nativeStreetViewCreatedCount, record created count of native street view.

@@ -618,17 +618,17 @@ class FlutterGoogleStreetView(
         if (viewReadyResult != null) {
             val hasInitLocation = initOptions?.let { it1 ->
                 it1.panoramaId != null || it1.position != null
-            }  ?: false
-            if(hasInitLocation) {
+            } ?: false
+            if (hasInitLocation) {
                 viewReadyResult?.success(streetViewIsReady())
                 viewReadyResult = null
             }
         }
-        val arg = location.let {
+        val arg = if (location.links.isNotEmpty()) location.let {
             Convert.streetViewPanoramaLocationToJson(
                 it
             )
-        } ?: mutableMapOf<String, Any>().apply {
+        } else mutableMapOf<String, Any>().apply {
             val errorMsg = if (lastMoveToPos != null)
                 "Oops..., no valid panorama found with position:${lastMoveToPos!!.latitude}, ${lastMoveToPos!!.longitude}, try to change `position`, `radius` or `source`."
             else if (lastMoveToPanoId != null)

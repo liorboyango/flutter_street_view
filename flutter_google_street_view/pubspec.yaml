@@ -3,6 +3,8 @@ description: A flutter plugin of google street view in Web, iOS and Android appl
 repository: https://github.com/zyzdev/flutter_street_view/tree/master/flutter_google_street_view
 version: 3.2.0
 
+publish_to: none
+
 environment:
   sdk: '>=3.4.3 <4.0.0'
   flutter: ">=3.22.2"
@@ -15,7 +17,11 @@ dependencies:
   kotlin_scope_function: ^1.0.2
   flutter_plugin_android_lifecycle: ^2.0.20
   google_maps: ^7.1.0
-  street_view_platform_interface: ^1.0.8
+  street_view_platform_interface:
+    git:
+      url: https://github.com/liorboyango/flutter_street_view.git
+      path: street_view_platform_interface
+      ref: master
 
 dev_dependencies:
   flutter_test:
