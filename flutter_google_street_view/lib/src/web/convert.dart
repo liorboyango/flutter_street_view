@@ -1,14 +1,14 @@
-import 'dart:async';
 import 'dart:core';
+import 'dart:js_interop';
 
 import 'package:google_maps/google_maps.dart' as gmaps;
-import 'package:google_maps/google_maps.dart';
+import 'package:google_maps/google_maps_streetview.dart' as street_view;
 
-/// Convert StreetViewPanoramaOptions to StreetViewPanoramaOptions of gmap
-Future<gmaps.StreetViewPanoramaOptions> toStreetViewPanoramaOptions(
+/// Convert StreetViewPanoramaOptions to StreetViewPanoramaOptions of street_view
+Future<street_view.StreetViewPanoramaOptions> toStreetViewPanoramaOptions(
     Map<String, dynamic> arg,
-    {gmaps.StreetViewPanorama? current}) async {
-  final result = gmaps.StreetViewPanoramaOptions();
+    {street_view.StreetViewPanorama? current}) async {
+  final result = street_view.StreetViewPanoramaOptions();
   String? errorMsg;
   var request;
   double? raduis = arg['radius'] as double?;
@@ -17,39 +17,32 @@ Future<gmaps.StreetViewPanoramaOptions> toStreetViewPanoramaOptions(
   String? pano;
   if (arg['panoId'] != null) {
     pano = arg['panoId'];
-    request = gmaps.StreetViewPanoRequest()..pano = pano;
+    request = street_view.StreetViewPanoRequest()..pano = pano;
   } else {
     location = gmaps.LatLng(arg['position'][0], arg['position'][1]);
     final sourceTmp = source == "outdoor"
-        ? gmaps.StreetViewSource.OUTDOOR
-        : gmaps.StreetViewSource.DEFAULT;
-    request = gmaps.StreetViewLocationRequest()
+        ? street_view.StreetViewSource.OUTDOOR
+        : street_view.StreetViewSource.DEFAULT;
+    request = street_view.StreetViewLocationRequest()
       ..location = location
       ..radius = raduis
       ..source = sourceTmp;
   }
-  Completer<bool> check = Completer();
 
-  void error(gmaps.StreetViewPanoramaData? data, status) {
-    final bool find = (status.toString() == "OK");
-    if (find) {
-      if (location != null) {
-        result.position = data!.location!.latLng;
-      } else {
-        result.pano = data!.location!.pano;
-      }
+  final data = await street_view.StreetViewService().getPanorama(request);
+  if (data.data.location == null) {
+    errorMsg = location != null
+        ? "Oops..., no valid panorama found with position:${location.lat}, ${location.lng}, try to change `position`, `radius` or `source`."
+        : pano != null
+            ? "Oops..., no valid panorama found with panoId:$pano, try to change `panoId`."
+            : "setPosition, catch unknown error.";
+  } else {
+    if (location != null) {
+      result.position = data.data.location!.latLng;
     } else {
-      errorMsg = location != null
-          ? "Oops..., no valid panorama found with position:${location.lat}, ${location.lng}, try to change `position`, `radius` or `source`."
-          : pano != null
-              ? "Oops..., no valid panorama found with panoId:$pano, try to change `panoId`."
-              : "setPosition, catch unknown error.";
+      result.pano = data.data.location!.pano;
     }
-    check.complete(find);
   }
-
-  gmaps.StreetViewService().getPanorama(request, error);
-  await check.future;
 
   result.showRoadLabels = arg['streetNamesEnabled'] as bool? ?? true;
   result.clickToGo = arg['clickToGo'] as bool? ?? true;
@@ -74,28 +67,28 @@ Future<gmaps.StreetViewPanoramaOptions> toStreetViewPanoramaOptions(
   result.visible = arg['visible'] as bool? ?? true;
 
   final currentPov = current?.pov;
-  result.pov = gmaps.StreetViewPov()
+  result.pov = street_view.StreetViewPov()
     ..heading = arg['bearing'] ?? currentPov?.heading ?? 0
     ..pitch = arg['tilt'] ?? currentPov?.pitch ?? 0;
   result.zoom = arg['zoom'] as double?;
   if (errorMsg != null) {
-    throw NoStreetViewException(options: result, errorMsg: errorMsg!);
+    throw NoStreetViewException(options: result, errorMsg: errorMsg);
   } else {
     return result;
   }
 }
 
-gmaps.StreetViewSource toStreetSource(Map<String, dynamic> arg) {
+street_view.StreetViewSource toStreetSource(Map<String, dynamic> arg) {
   final source = arg['source'];
   return source == "outdoor"
-      ? gmaps.StreetViewSource.OUTDOOR
-      : gmaps.StreetViewSource.DEFAULT;
+      ? street_view.StreetViewSource.OUTDOOR
+      : street_view.StreetViewSource.DEFAULT;
 }
 
-gmaps.StreetViewAddressControlOptions? toStreetViewAddressControlOptions(
+street_view.StreetViewAddressControlOptions? toStreetViewAddressControlOptions(
     dynamic arg) {
   final pos = arg is Map ? arg["addressControlOptions"] : arg;
-  return gmaps.StreetViewAddressControlOptions()
+  return street_view.StreetViewAddressControlOptions()
     ..position = toControlPosition(pos);
 }
 
@@ -151,16 +144,16 @@ gmaps.ControlPosition? toControlPosition(String? position) {
 }
 
 Map<String, dynamic> streetViewPanoramaLocationToJson(
-        gmaps.StreetViewPanorama panorama) =>
-    linkToJson(panorama.links)
+        street_view.StreetViewPanorama panorama) =>
+    linkToJson(panorama.links.toDart)
       ..["panoId"] = panorama.pano
       ..addAll(positionToJson(panorama.position));
 
 Map<String, dynamic> streetViewPanoramaCameraToJson(
-        gmaps.StreetViewPanorama panorama) =>
+        street_view.StreetViewPanorama panorama) =>
     {
-      "bearing": panorama.pov?.heading,
-      "tilt": panorama.pov?.pitch,
+      "bearing": panorama.pov.heading,
+      "tilt": panorama.pov.pitch,
       "zoom": panorama.zoom
     };
 
@@ -168,7 +161,7 @@ Map<String, dynamic> positionToJson(gmaps.LatLng? position) => {
       "position": (position != null ? [position.lat, position.lng] : null)
     };
 
-Map<String, dynamic> linkToJson(List<gmaps.StreetViewLink?>? links) {
+Map<String, dynamic> linkToJson(List<street_view.StreetViewLink?>? links) {
   List links1 = [];
   if (links != null) {
     links.forEach((l) {
@@ -179,7 +172,7 @@ Map<String, dynamic> linkToJson(List<gmaps.StreetViewLink?>? links) {
 }
 
 class NoStreetViewException implements Exception {
-  final gmaps.StreetViewPanoramaOptions options;
+  final street_view.StreetViewPanoramaOptions options;
   final String errorMsg;
 
   NoStreetViewException({required this.options, required this.errorMsg});
